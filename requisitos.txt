@@ -1,0 +1,65 @@
+- Se treinar, o agente deverá comer entre 300 e 400 frutas considerado /todas execuções.
+
+
+MAIN
+- O usuário deve determinar a quantidade de execuções para o jogo;
+- O usário deve escolher uma opção de jogo entre Treinar ou Testar;
+- O usuário deve escolher entre a heurística entre Zero ou Manhattan;
+
+- Ao fim de cada execução, o programa deve imprimir um arquivo de texto (.arff) contendo os atributos (incluindo energia) de todas as frutas que ele comeu. Ex:
+		<madureza>,<carboidratos>,<fibras>,<proteínas>,<lipídeos>,<energia>
+		verde,alta,alta,alta,alta,50
+
+- Ao fim de cada execução, imprimir um arquivo com o caminho, seu custo, energia final do agente, e se chegou ao destino (atributos do Agente);
+
+- Se Primeira execução e Manhattan, settar a heurística do Agente como pela distância de Manhattan
+- Se Primeira Execução e Zero, settar a heurística do Agente como zero para todos as posições
+
+- O jogo termina se atingir o número de execuções definido pelo usuário;
+
+AGENTE
+- O Agente começa numa posição (i=S0);
+- O Agente se desloca por LRTA* até o destino (d=Sg);
+
+- Uma execução termina quando o agente chega ao destino;
+- Se Testar, a execução termina também se o Agente ficar com menos de 75kcal;
+
+- O Agente deve armazenar todas as Frutas que ele come;
+- O Agente deve armazezar a sequencia de estados que ele visita;
+- O Agente deve armazenar sua energia (i=250kcal) ;
+- O Agente deve armazenar que chegou ao destino;
+- O Agente deve armazenar se morreu;
+- O Agente armazena uma heurística;
+- O Agente armazena o custo atual do caminho;
+- A cada passo, o agente atualiza sua herística (conforme LRTA*)
+- A cada passo, o agente atualiza o custo atual do caminho:
+	-Movimento Horizontal/Vertical: 1.0
+	-Movimento Diagonal: 1.5
+
+- Colocar uma fruta em cada posição livre do labirinto;
+- As Frutas devem ser colocadas aleatóriamente a cada execução;
+- Se Treinar, o Agente deve comer todas as frutas (max aprendizado);
+- Quando o Agente come uma Fruta sua energia aumenta conforme a fruta;
+- O Agente não sabe em quanto sua energia aumenta antes de comer a fruta;
+- O Agente deve ser capaz de coletar os atributos da fruta da posição em que ele está, antes de comer (menos energia);
+- Se Testar, o Agente deve estimar a energia de uma fruta baseado em seus atributos;
+- Após o aprendizado, O Agente deve decidir entre deixar, comer ou guardar a Fruta;
+- Se ele deixar sua energia não aumenta;
+- Ao chegar a fonte, a Energia do Agente deve ser o mínima(->0);
+
+ENERGIA (atributo public do Agente)
+- A energia deve ser atualizada a cada movimento:
+	-Descontar a energia do movimento (75kcal);
+	-Descontar a energia de comer a fruta (15kcal), se ele comeu;
+	-Descontar a energia de das frutas guardadas (5kcal*frutas guardadas);
+
+FRUTA
+- Uma fruta tem todo os atributos da tabela
+- O valores dos atributos são sorteados aleatóriamente para cada fruta
+- Um valor de energia deve ser calculado conforme os valores de seus atributos e a tabela 2
+- O valor dos atributos deve ser conhecido pelo Agente (public) antes de comê-la (menos a energia).
+
+
+
+
+
