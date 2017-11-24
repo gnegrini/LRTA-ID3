@@ -41,7 +41,8 @@ public class Model implements CoordenadasGeo {
         lab.porParedeHorizontal(4, 7, 6);
         lab.porParedeHorizontal(4, 7, 7);
         lab.porParedeHorizontal(2, 2, 8);
-        lab.porParedeVertical(6, 8, 1);        
+        lab.porParedeVertical(6, 8, 1);
+        
 
         // instancia a visualizacao do ambiente associando-a ao model
         view = new View(this);
@@ -112,4 +113,15 @@ public class Model implements CoordenadasGeo {
         this.pos = pos;
     }
 
+    // Sorteia as frutas no lab e deleta as frutas da posicao inicial e final
+    public void sortearFrutas(){
+        lab.sortFrutas();
+        lab.delFrutaInPos(pos);
+    }
+
+    public Labirinto getLab() {
+        return lab;
+    }
+
+    
 }

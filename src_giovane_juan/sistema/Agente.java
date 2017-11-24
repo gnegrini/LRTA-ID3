@@ -13,12 +13,15 @@ import java.util.Random;
 public class Agente implements CoordenadasGeo {
     Model model;
     Problema prob;        
+    Metabolismo met;
+    Fruta fruit;
+    
     boolean testar;         // indica se o agente está treinando ou testando um treinamento
     boolean manh;
     
     private ArrayList<Fruta> frutasComidas;     // armazena as frutas comidas
     private ArrayList<String> caminho;      // armazena os estados visitados        
-    private int energia;        // armazena a energia atual do agente        
+
     private float custoC;        // armazena o custoC atual do caminho       
     private boolean chegou;        // para a classe Main saber que chegou ao destino        
     private boolean vivo;     // para saber se o agente morreu ou esta vivo
@@ -38,9 +41,10 @@ public class Agente implements CoordenadasGeo {
         frutasComidas = new ArrayList<>();
         caminho = new ArrayList<>();        
         prob = new Problema();
-        prob.criarLabirinto();
+        met = new Metabolismo();
+        
        
-        reset();
+        //reset();
         // Define os estados
 	prob.defEstIni(8, 0);
 	prob.defEstObj(2,6);        
@@ -70,13 +74,27 @@ public class Agente implements CoordenadasGeo {
             
             // Executa a proxima acao
             executarIr(proxAcao);
+            
+//            // Atualiza a energia do Agente para descontar o passo andado
+//            met.updateEnergia();
 
             // Adiciona o novo estado atual ao caminho
             caminho.add("[" + prob.estAtu[0] + "," + prob.estAtu[1] + "]");           
-
+                       
+            // Se nao é o estado final (fruta == null)
+            if(!prob.testeObjetivo()) {
+                // Pega a fruta da posicao atual para analisar            
+                fruit = prob.creLab.getFrutaInPos(prob.estAtu);
+                if(!testar)
+                    frutasComidas.add(fruit);
+            }
+//            // remove a fruta dos labirintos (modelo e problema)           
+//            if(met.comerOuGuardar()){
+//                9
+//            }
         
-            if(testar && energia < 75){ // agente em modo de Teste e sem energia
-                energia = -10;
+            if(testar && (met.getEnergia() < 75)){ // agente em modo de Teste e sem energia
+                met.setEnergia(-18);
                 vivo = false;
                 return (-1);        // mohrreu, encerrar execucao
             }            
@@ -110,7 +128,7 @@ public class Agente implements CoordenadasGeo {
         acoesPossiveis = prob.acoesPossiveis(prob.estAtu); 
 
         System.out.println("estado atual: (" + prob.estAtu[0] + "," + prob.estAtu[1]+")");
-        System.out.println("acoes possiveis: ");                       
+        //System.out.println("acoes possiveis: ");                       
 
         float menorCustoF = 50000;     //inicializando com um valor alto para o f(n')
         for (int i=0; i<acoesPossiveis.length; i++) {                       
@@ -121,24 +139,24 @@ public class Agente implements CoordenadasGeo {
                 // Calcula o custo f(n')
                 custoF = calcularCustoF(i);
                 
-                System.out.println("Acao: " + acao[i] + " Custo: " + custoF + " Menor Custo: " + menorCustoF);
+                //System.out.println("Acao: " + acao[i] + " Custo: " + custoF + " Menor Custo: " + menorCustoF);
                 
                 // Se o  custo f(n') eh menor que o melhor ateh agora,
                 // atualiza o custo e a proxima acao
                 if(custoF < menorCustoF){
                     menorCustoF = custoF;
-                    proxAcao = i;
-                    System.out.println("Acao Decidida: " + acao[proxAcao]);
-                }
+                    proxAcao = i;                
+                } else
+                
                 // Se o custo f(n') eh igual,
                 // decide aleatoriamente se troca ou nao (50/50)                
-                else if((custoF == menorCustoF) && rand.nextInt(2)== 1){
-                        proxAcao = i;
-                        System.out.println("Acao Decidida: " + acao[proxAcao]);
-                    
+                if((custoF == menorCustoF) && (rand.nextInt(2)== 1)){
+                    proxAcao = i;
+                    System.out.println("Acao Decidida no Empate");                    
                 }
             }                
         }    
+        System.out.println("Acao Decidida: " + acao[proxAcao]);
     }
 
     // Calcula o custo f(n') 
@@ -172,7 +190,7 @@ public class Agente implements CoordenadasGeo {
     }
 
     public int getEnergia() {
-        return energia;
+        return met.getEnergia();
     }
 
     public float getCustoC() {
@@ -191,9 +209,10 @@ public class Agente implements CoordenadasGeo {
         prob.imprimirMatrizHeuristica();
     }
 
+    // Funcao para configurar a primeira e novas execucoes
     public void reset() {
         
-        frutasComidas.clear();
+        //frutasComidas.clear();
         caminho.clear();        
         //prob = new Problema();
         //prob.criarLabirinto();               
@@ -207,15 +226,27 @@ public class Agente implements CoordenadasGeo {
         // Posicao inicial do agente
         int[] pos = new int[]{8,0};        
         model.setPos(pos);
+        
+        // Sorteia um novo conjunto de frutas para as posicoes do lab
+        model.sortearFrutas();
+        model.getLab().delFrutaInPos(prob.estIni); // deleta a fruta no estado inicial
+        model.getLab().delFrutaInPos(prob.estObj); // deleta a fruta no estado objetivo
+        
+        //met.resetMetabolismo();
+        
+        // Modelo = Creanca; atualiza as frutas do modelo para o problema
+        prob.setCreLab(model.getLab());        
+        
         // Custo zero já que nao andou ainda
         custoC = 0;
-        
-        // Energia Inicial é 250kcal
-        energia = 250;
-        
+               
         // Comeca vivo e fora do destino
         vivo = true;                
         chegou = false;
+    }
+
+    void imprimirPosFrutas() {
+        prob.imprimirPosFrutas();
     }
     
 }

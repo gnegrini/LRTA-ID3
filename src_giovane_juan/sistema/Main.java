@@ -21,7 +21,7 @@ public class Main {
         Model mdl = new Model(9, 9);              
         
         // Ciclo de execucao do sistema
-        int execucoes = 50;
+        int execucoes = 40;
         int testar = 0;
         int manhattan = 1;        
         
@@ -49,15 +49,17 @@ public class Main {
         Agente ag = new Agente(mdl, (manhattan==1), (testar==1));
 
         System.out.println("Labirinto");        
-        ag.imprimirMatrizHeuristica();
+        // ag.imprimirMatrizHeuristica();        
         
         for (int i = 0; i < execucoes; i++) {
             System.out.println("Execucao: " + (i+1));                                                
             ag.reset();         // reseta os atributos para uma nova execucao
+            ag.imprimirPosFrutas();
             while (ag.deliberar() != -1) {                
-                mdl.desenhar();
-                ag.imprimirMatrizHeuristica();
-            }                          
+                //mdl.desenhar();
+                //ag.imprimirMatrizHeuristica();                
+            }                                      
+            
             
             // Gravar os dados do desempenho do agente (execucao, custo, energia, ...)
             gravarArquivoDesempenho(i, ag, fileDesempenho);
@@ -72,9 +74,10 @@ public class Main {
 
     private static void gravarArquivoFrutas(Agente ag, FileWriter fileWriter) {                
         try{
-            for (Fruta frutaComida : ag.getFrutasComidas()) {
+            for (Fruta frutaComida : ag.getFrutasComidas()) {                
                 fileWriter.append(frutaComida.toString());
                 fileWriter.append("\n");
+                System.out.println(frutaComida);
             }
         }catch (IOException e) {
 	            System.out.println("Error in Writing File !!!");

@@ -25,6 +25,10 @@ public class Problema implements CoordenadasGeo {
         this.heuristica = new float[maxLin][maxCol];
     }
 
+    public void setCreLab(Labirinto creLab) {
+        this.creLab = creLab;
+    }    
+    
     /*
      * O que o agente crê sobre o labirinto
      */
@@ -227,5 +231,16 @@ public class Problema implements CoordenadasGeo {
             System.out.println();
         }
     System.out.println();
+    }
+
+    void imprimirPosFrutas() {
+        Fruta [][] posFrutas = creLab.getPosFrutas();
+        
+        for (int i = 0; i < posFrutas.length; i++) {
+            for (int j = 0; j < posFrutas[i].length; j++) {
+                System.out.print(posFrutas[i][j] + "  ");
+            }
+            System.out.println();
+        }    
     }
 }
