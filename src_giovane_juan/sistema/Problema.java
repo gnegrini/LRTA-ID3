@@ -192,17 +192,17 @@ public class Problema implements CoordenadasGeo {
         return (estAtu[0] == estObj[0] && estAtu[1] == estObj[1]);
     }
 
-    protected void calcularHeuristica(boolean manh) {
+    protected void calcularHeuristica(boolean euc) {
         int row, col;
         
-        // Calcula a distância de Manhattan para cada celula e atualiza a heuristica
-        if (manh) {
+        // Calcula a distância euclidiana para cada celula e atualiza a heuristica
+        if (euc) {
             for (row = 0; row <maxLin; row++){
                 for (col = 0; col < maxCol; col++) {
-                    heuristica[row][col]=Math.abs(row-estObj[0])+Math.abs(col-estObj[1]);
+                    heuristica[row][col]= (float) Math.sqrt(Math.pow((row-estObj[0]),2) + Math.pow((col-estObj[1]),2) );
                 }
             }                
-        
+            
         } else {
             for (row = 0; row <maxLin; row++){
                 for (col = 0; col < maxCol; col++) {

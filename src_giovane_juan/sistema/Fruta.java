@@ -76,7 +76,7 @@ public class Fruta {
             }
         }
         
-        if (lipideos.equals("pouca")) {
+        else if (lipideos.equals("pouca")) {
             if (carboidratos.equals("pouca")) {
                 if (proteinas.equals("alta") && fibras.equals("alta") && !madureza.equals("podre")){
                     return 50;
@@ -95,7 +95,7 @@ public class Fruta {
                 }
             }
         }                               
-        
+                 
         return 5;
     }
     

@@ -21,9 +21,9 @@ public class Main {
         Model mdl = new Model(9, 9);              
         
         // Ciclo de execucao do sistema
-        int execucoes = 40;
-        int testar = 0;
-        int manhattan = 1;        
+        int execucoes = 50;
+        int testar = 1;
+        int euclidean = 1;        
         
         // Prepara os arquivos para salvar os dados
         FileWriter[] vec = new FileWriter[2];
@@ -35,32 +35,31 @@ public class Main {
         
         scanner = new Scanner(System.in);  
         
-//        System.out.printf("Digite o numero de execucoes: ");
-//        execucoes = scanner.nextInt();
-//        System.out.printf("Digite 0 para Treinar ou 1 para Testar: ");
-//        testar = scanner.nextInt();
-//        System.out.printf("Digite 0 para Heuristica Zero ou 1 para Manhattan: ");
-//        manhattan = scanner.nextInt();        
-//        
-//        System.out.printf("Configuracao -- Execucoes: %d, Modo %d, Heuristica: %d \n", execucoes, testar, manhattan);               
-//        
+        System.out.printf("Digite o numero de execucoes: ");
+        execucoes = scanner.nextInt();
+        System.out.printf("Digite 0 para Treinar ou 1 para Testar: ");
+        testar = scanner.nextInt();
+        System.out.printf("Digite 0 para Heuristica Zero ou 1 para Euclidiana: ");
+        euclidean = scanner.nextInt();        
         
-        // Cria um agente com as caracteristicas do jogo e passa 'testar' e 'manhattan' como boolean        
-        Agente ag = new Agente(mdl, (manhattan==1), (testar==1));
+        System.out.printf("Configuracao -- Execucoes: %d, Modo %d, Heuristica: %d \n", execucoes, testar, euclidean);               
+        
+        
+        // Cria um agente com as caracteristicas do jogo e passa 'testar' e 'euclidean' como boolean        
+        Agente ag = new Agente(mdl, (euclidean==1), (testar==1));
 
         System.out.println("Labirinto");        
-        // ag.imprimirMatrizHeuristica();        
+        ag.imprimirMatrizHeuristica();        
         
         for (int i = 0; i < execucoes; i++) {
+            System.out.println();
             System.out.println("Execucao: " + (i+1));                                                
             ag.reset();         // reseta os atributos para uma nova execucao
             ag.imprimirPosFrutas();
             while (ag.deliberar() != -1) {                
-                //mdl.desenhar();
-                //ag.imprimirMatrizHeuristica();                
-            }                                      
-            
-            
+                mdl.desenhar();
+                ag.imprimirMatrizHeuristica();                
+            }                                                              
             // Gravar os dados do desempenho do agente (execucao, custo, energia, ...)
             gravarArquivoDesempenho(i, ag, fileDesempenho);
         }
@@ -73,11 +72,22 @@ public class Main {
     }
 
     private static void gravarArquivoFrutas(Agente ag, FileWriter fileWriter) {                
+                
         try{
-            for (Fruta frutaComida : ag.getFrutasComidas()) {                
-                fileWriter.append(frutaComida.toString());
+            // header para o arquivo .arff do weka
+            fileWriter.append("@relation climaforecast-normal\n");
+            fileWriter.append("@attribute madureza {verde, madura, podre}\n");
+            fileWriter.append("@attribute carboidratos {pouca, moderada, alta}\n");
+            fileWriter.append("@attribute fibras {pouca, moderada, alta}\n");
+            fileWriter.append("@attribute proteinas {pouca, moderada, alta}\n");
+            fileWriter.append("@attribute lipideos {pouca, moderada, alta}\n");
+            fileWriter.append("@attribute energia {5, 25, 50, 100}\n");
+            fileWriter.append("@data\n");
+            
+            // grava as frutas comidas no arquivo
+            for (Fruta frutaComida : ag.getMet().getFrutasComidas()) {                
+                fileWriter.append(frutaComida.toString());                
                 fileWriter.append("\n");
-                System.out.println(frutaComida);
             }
         }catch (IOException e) {
 	            System.out.println("Error in Writing File !!!");

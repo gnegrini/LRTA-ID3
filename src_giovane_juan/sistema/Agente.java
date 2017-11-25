@@ -17,9 +17,8 @@ public class Agente implements CoordenadasGeo {
     Fruta fruit;
     
     boolean testar;         // indica se o agente está treinando ou testando um treinamento
-    boolean manh;
+    boolean euc;
     
-    private ArrayList<Fruta> frutasComidas;     // armazena as frutas comidas
     private ArrayList<String> caminho;      // armazena os estados visitados        
 
     private float custoC;        // armazena o custoC atual do caminho       
@@ -31,25 +30,22 @@ public class Agente implements CoordenadasGeo {
     
     Random rand;        // para decidir empates no LRTA*
          
-    public Agente(Model mdl, boolean manh, boolean test) {
+    public Agente(Model mdl, boolean euc, boolean test) {
         this.model = mdl;        
         this.testar = test;
-        this.manh = manh;
+        this.euc = euc;
         
         // Inicializa as variaveis
 	rand = new Random();       
-        frutasComidas = new ArrayList<>();
         caminho = new ArrayList<>();        
         prob = new Problema();
         met = new Metabolismo();
-        
-       
-        //reset();
+                       
         // Define os estados
 	prob.defEstIni(8, 0);
 	prob.defEstObj(2,6);        
 	prob.defEstAtu(8,0);
-        prob.calcularHeuristica(manh);            
+        prob.calcularHeuristica(euc);            
     }
     
     
@@ -61,7 +57,17 @@ public class Agente implements CoordenadasGeo {
         // nao atingiu objetivo
         if (!prob.testeObjetivo()) {
            
-           // Decide a proxima acao e coloca na variavel proxAcao
+            System.out.println("Energia: " + met.getEnergia());        
+            
+            // Verifica se o Agente ja esta morto no teste
+            // No treinamento ele nao morre por falta de energia
+            if(testar && (met.getEnergia() < 75)){
+                vivo = false;
+                System.out.println("Morreu sem energia");
+                return (-1);        // mohrreu, encerrar execucao
+            }
+            
+            // Decide a proxima acao e coloca na variavel proxAcao
             decidirAcao();
            
             custoC = custoC + calcularCustoC(proxAcao);
@@ -73,34 +79,22 @@ public class Agente implements CoordenadasGeo {
             prob.defEstAtu(suc[0],suc[1]); // atualiza estado do agente
             
             // Executa a proxima acao
-            executarIr(proxAcao);
-            
-//            // Atualiza a energia do Agente para descontar o passo andado
-//            met.updateEnergia();
+            executarIr(proxAcao);            
 
             // Adiciona o novo estado atual ao caminho
             caminho.add("[" + prob.estAtu[0] + "," + prob.estAtu[1] + "]");           
-                       
-            // Se nao é o estado final (fruta == null)
-            if(!prob.testeObjetivo()) {
-                // Pega a fruta da posicao atual para analisar            
-                fruit = prob.creLab.getFrutaInPos(prob.estAtu);
-                if(!testar)
-                    frutasComidas.add(fruit);
-            }
-//            // remove a fruta dos labirintos (modelo e problema)           
-//            if(met.comerOuGuardar()){
-//                9
-//            }
-        
-            if(testar && (met.getEnergia() < 75)){ // agente em modo de Teste e sem energia
-                met.setEnergia(-18);
-                vivo = false;
-                return (-1);        // mohrreu, encerrar execucao
-            }            
+            
+            // Atualiza a energia do Agente para descontar o passo andado
+            met.updateEnergia();
+            
+            // Decide o que fazer com a fruta
+            processarFruta();                        
+                                    
         }
         else{        //atingiu o objetivo
             chegou = true;
+            if(met.getEnergia() < 75)
+                vivo = false;
             return (-1);  
         }
         return 1; //segue o jogo        
@@ -181,10 +175,6 @@ public class Agente implements CoordenadasGeo {
             return (float) 1.5;
     }
     
-    public ArrayList<Fruta> getFrutasComidas() {
-        return frutasComidas;
-    }
-
     public ArrayList<String> getCaminho() {
         return caminho;
     }
@@ -211,8 +201,7 @@ public class Agente implements CoordenadasGeo {
 
     // Funcao para configurar a primeira e novas execucoes
     public void reset() {
-        
-        //frutasComidas.clear();
+                
         caminho.clear();        
         //prob = new Problema();
         //prob.criarLabirinto();               
@@ -232,7 +221,7 @@ public class Agente implements CoordenadasGeo {
         model.getLab().delFrutaInPos(prob.estIni); // deleta a fruta no estado inicial
         model.getLab().delFrutaInPos(prob.estObj); // deleta a fruta no estado objetivo
         
-        //met.resetMetabolismo();
+        met.resetMetabolismo();
         
         // Modelo = Creanca; atualiza as frutas do modelo para o problema
         prob.setCreLab(model.getLab());        
@@ -248,7 +237,30 @@ public class Agente implements CoordenadasGeo {
     void imprimirPosFrutas() {
         prob.imprimirPosFrutas();
     }
-    
-}
-    
 
+    private void processarFruta() {
+        // Se nao é o estado final (fruta == null)                        
+        // "Ve" qual é fruta da posicao atual para analisar            
+        fruit = prob.creLab.getFrutaInPos(prob.estAtu);
+
+        // Se ele ja comeu a fruta ou se é o destino final,
+        // a fruta no estado é null
+        if(null!=fruit) {
+            
+            // Pega a distancia estimada do destino para decidir
+            float distEst;
+            distEst = prob.getValorHeuristico(prob.estAtu);
+            
+            // Decide entre comer, guardar ou deixar
+            // Se comer ou guardar deleta a fruta dos labs                
+            if(met.comerOuGuardar(testar, fruit, distEst)){                                
+                prob.creLab.delFrutaInPos(prob.estAtu);
+                model.getLab().delFrutaInPos(prob.estAtu);                
+            }
+        }
+    }   
+
+    public Metabolismo getMet() {
+        return met;
+    }
+}
