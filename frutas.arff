@@ -1,0 +1,18 @@
+@relation climaforecast-normal
+@attribute madureza {verde, madura, podre}
+@attribute carboidratos {pouca, moderada, alta}
+@attribute fibras {pouca, moderada, alta}
+@attribute proteinas {pouca, moderada, alta}
+@attribute lipideos {pouca, moderada, alta}
+@attribute energia {5, 25, 50, 100}
+@data
+madura, pouca, pouca, alta, moderada, 50
+madura, moderada, alta, alta, pouca, 100
+verde, moderada, moderada, moderada, pouca, 25
+verde, moderada, alta, moderada, alta, 50
+podre, alta, moderada, pouca, alta, 25
+verde, moderada, moderada, pouca, moderada, 50
+verde, moderada, pouca, pouca, alta, 50
+verde, moderada, moderada, moderada, alta, 50
+madura, pouca, alta, pouca, alta, 50
+verde, moderada, alta, pouca, pouca, 25
