@@ -48,6 +48,7 @@ public class Metabolismo {
             System.out.println("Energia Estimada: " + energiaFruta);
             System.out.println("Energia Real: " + energiaReal);
             
+
             if (energiaNec > energia) {                
                 // come se a energia fornecida pela fruta é maior que gasta para comer                
                 if(energiaFruta > 15){
@@ -96,12 +97,14 @@ public class Metabolismo {
     }        
 
     public int estimarEnergiaFruta(Fruta fruit){
+
         int energiaEst = 0;
         String madureza = fruit.getMadureza();
         String carboidratos = fruit.getCarboidratos();
         String lipideos = fruit.getLipideos();
         String proteinas = fruit.getProteinas();
         String fibras = fruit.getFibras();
+
 
         if(madureza.equals("verde"))
 		{

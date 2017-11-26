@@ -3,7 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+<<<<<<< HEAD
             <file>file:/home/gnegrini/Downloads/LRTA-ID3-master/LRTA-ID3-master/src_giovane_juan/sistema/Metabolismo.java</file>
+=======
+            <file>file:/home/gnegrini/UTFPR/SI/Tacla/LRTA-ID3/src_giovane_juan/sistema/Main.java</file>
+            <file>file:/home/gnegrini/UTFPR/SI/Tacla/LRTA-ID3/src_giovane_juan/sistema/Fruta.java</file>
+            <file>file:/home/gnegrini/UTFPR/SI/Tacla/LRTA-ID3/src_giovane_juan/sistema/Agente.java</file>
+>>>>>>> 7052d1b326fe4da5541ffec6be6a40184077be90
         </group>
     </open-files>
 </project-private>
