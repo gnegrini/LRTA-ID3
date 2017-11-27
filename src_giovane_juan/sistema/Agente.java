@@ -17,7 +17,8 @@ public class Agente implements CoordenadasGeo {
     Fruta fruit;
     
     boolean testar;         // indica se o agente está treinando ou testando um treinamento
-    boolean euc;
+    boolean euc;        // indica se utilizar heuristica euclidiana ou tudo zero
+    boolean arvore;     //  indica se utilizar a arvore de decisao ou comer todas
     
     private ArrayList<String> caminho;      // armazena os estados visitados        
 
@@ -30,10 +31,11 @@ public class Agente implements CoordenadasGeo {
     
     Random rand;        // para decidir empates no LRTA*
          
-    public Agente(Model mdl, boolean euc, boolean test) {
+    public Agente(Model mdl, boolean euc, boolean test, boolean tree) {
         this.model = mdl;        
         this.testar = test;
         this.euc = euc;
+        this.arvore = tree;
         
         // Inicializa as variaveis
 	rand = new Random();       
@@ -253,7 +255,7 @@ public class Agente implements CoordenadasGeo {
             
             // Decide entre comer, guardar ou deixar
             // Se comer ou guardar deleta a fruta dos labs                
-            if(met.comerOuGuardar(testar, fruit, distEst)){                                
+            if(met.comerOuGuardar(testar, fruit, distEst, arvore)){                                
                 prob.creLab.delFrutaInPos(prob.estAtu);
                 model.getLab().delFrutaInPos(prob.estAtu);                
             }

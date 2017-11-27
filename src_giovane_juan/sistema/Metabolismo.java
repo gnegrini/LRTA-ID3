@@ -27,15 +27,17 @@ public class Metabolismo {
     }
 
 
-    boolean comerOuGuardar(boolean testar, Fruta fruit, float distEst) {
+    boolean comerOuGuardar(boolean testar, Fruta fruit, float distEst, boolean arvore) {
         float energiaNec;
         int energiaFruta;
         
-        // Se for modo treino, comer todas as frutas
-        if(!testar){
+        // Se for modo treino ou se for modo come todas,
+        // comer todas as frutas;
+        if(!testar || !arvore){
             comer(fruit);
             return true;
         } 
+                
         
         else    {
             // Com base na energia estimada necessaria e da fruta, decide se precisa aumentar ou 

@@ -21,9 +21,10 @@ public class Main {
         Model mdl = new Model(9, 9);              
         
         // Ciclo de execucao do sistema
-        int execucoes = 50;
-        int testar = 1;
-        int euclidean = 1;        
+        int execucoes;
+        int testar;
+        int euclidean;
+        int arvore;
         
         // Prepara os arquivos para salvar os dados
         FileWriter[] vec = new FileWriter[2];
@@ -41,12 +42,15 @@ public class Main {
         testar = scanner.nextInt();
         System.out.printf("Digite 0 para Heuristica Zero ou 1 para Euclidiana: ");
         euclidean = scanner.nextInt();        
+        System.out.printf("Digite 0 para comer todas ou 1 para decidir pela arvore: ");
+        arvore = scanner.nextInt();        
+        
         
         System.out.printf("Configuracao -- Execucoes: %d, Modo %d, Heuristica: %d \n", execucoes, testar, euclidean);               
         
         
         // Cria um agente com as caracteristicas do jogo e passa 'testar' e 'euclidean' como boolean        
-        Agente ag = new Agente(mdl, (euclidean==1), (testar==1));
+        Agente ag = new Agente(mdl, (euclidean==1), (testar==1), (arvore==1));
 
         System.out.println("Labirinto");        
         ag.imprimirMatrizHeuristica();        
